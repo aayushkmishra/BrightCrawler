@@ -1,0 +1,5 @@
+# BrightEdge assignment sample URLs plus one additional product page.
+https://www.amazon.com/Cuisinart-CPT-122-Compact-2-Slice-Toaster/dp/B009GQ034C
+https://www.amazon.com/GE-Adjustable-Removable-Countertop-Essentials/dp/B0FJL71GH8
+https://blog.rei.com/camp/how-to-introduce-your-indoorsy-friend-to-the-outdoors
+https://www.cnn.com/2025/09/23/tech/google-study-90-percent-tech-jobs-ai

@@ -1,0 +1,12 @@
+fastapi==0.136.3
+uvicorn[standard]==0.48.0
+httpx==0.28.1
+beautifulsoup4==4.14.3
+lxml==6.1.1
+lxml_html_clean==0.4.5
+trafilatura==2.0.0
+price-parser==0.5.0
+cachetools==7.1.4
+slowapi==0.1.9
+pydantic==2.13.4
+python-multipart==0.0.29

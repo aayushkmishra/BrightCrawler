@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BrightEdge Crawl Showcase</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17212b;
+        --muted: #607080;
+        --line: #d8e0e7;
+        --panel: #ffffff;
+        --soft: #f4f7fa;
+        --brand: #0f766e;
+        --brand-dark: #115e59;
+        --accent: #b45309;
+        --danger: #b42318;
+        --shadow: 0 18px 45px rgba(23, 33, 43, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #eef3f6;
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(280px, 390px) 1fr;
+      }
+
+      .sidebar {
+        background: var(--panel);
+        border-right: 1px solid var(--line);
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        background: var(--ink);
+        color: white;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 22px;
+        line-height: 1.15;
+      }
+
+      h2 {
+        font-size: 16px;
+      }
+
+      h3 {
+        font-size: 15px;
+      }
+
+      .subtle {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .control-panel {
+        padding: 16px;
+        display: grid;
+        gap: 13px;
+      }
+
+      label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      input[type="url"],
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 11px 12px;
+        resize: vertical;
+        color: var(--ink);
+        background: white;
+      }
+
+      textarea {
+        min-height: 104px;
+      }
+
+      input:focus,
+      textarea:focus {
+        outline: 2px solid rgba(15, 118, 110, 0.2);
+        border-color: var(--brand);
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: none;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .btn {
+        min-height: 42px;
+        border: 0;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 12px;
+        font-weight: 750;
+      }
+
+      .btn.primary {
+        background: var(--brand);
+        color: white;
+      }
+
+      .btn.primary:hover {
+        background: var(--brand-dark);
+      }
+
+      .btn.secondary {
+        background: #e8eef2;
+        color: var(--ink);
+      }
+
+      .btn:disabled {
+        cursor: wait;
+        opacity: 0.72;
+      }
+
+      .results-list {
+        display: grid;
+        gap: 10px;
+        overflow: auto;
+        padding-right: 2px;
+      }
+
+      .saved-item {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+        color: var(--ink);
+        padding: 12px;
+        text-align: left;
+      }
+
+      .saved-item:hover,
+      .saved-item.active {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+      }
+
+      .saved-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 13px;
+        font-weight: 750;
+        line-height: 1.35;
+        word-break: break-word;
+      }
+
+      .tag {
+        border-radius: 999px;
+        padding: 3px 8px;
+        background: #e8f4f2;
+        color: var(--brand-dark);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .workspace {
+        padding: 30px;
+        overflow: auto;
+      }
+
+      .hero {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 22px;
+      }
+
+      .hero h2 {
+        font-size: 30px;
+        max-width: 760px;
+        line-height: 1.15;
+      }
+
+      .status {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: white;
+        padding: 7px 11px;
+        color: var(--muted);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--brand);
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .metric {
+        padding: 16px;
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 24px;
+        line-height: 1.1;
+        word-break: break-word;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
+        gap: 18px;
+      }
+
+      .main-card,
+      .side-card {
+        padding: 18px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 14px;
+      }
+
+      .title {
+        font-size: 22px;
+        line-height: 1.25;
+        word-break: break-word;
+      }
+
+      .url {
+        color: var(--muted);
+        font-size: 13px;
+        word-break: break-all;
+        margin-top: 8px;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        border: 1px solid #cbd8df;
+        border-radius: 999px;
+        padding: 6px 9px;
+        background: var(--soft);
+        color: #344655;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .entity-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .entity {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fbfcfd;
+      }
+
+      .entity span {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .entity strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 14px;
+        word-break: break-word;
+      }
+
+      .body-preview {
+        max-height: 320px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfcfd;
+        padding: 14px;
+        color: #344655;
+        font-size: 14px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+
+      .raw {
+        max-height: 420px;
+        overflow: auto;
+        border-radius: 8px;
+        background: #111827;
+        color: #e5edf4;
+        padding: 14px;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .empty {
+        display: grid;
+        place-items: center;
+        min-height: 360px;
+        border: 1px dashed #b8c5cf;
+        border-radius: 8px;
+        color: var(--muted);
+        text-align: center;
+        padding: 28px;
+        background: rgba(255, 255, 255, 0.62);
+      }
+
+      .error {
+        color: var(--danger);
+      }
+
+      @media (max-width: 1060px) {
+        .shell,
+        .content {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .sidebar,
+        .workspace {
+          padding: 18px;
+        }
+
+        .hero {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .hero h2 {
+          font-size: 24px;
+        }
+
+        .summary-grid,
+        .entity-grid,
+        .actions {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="mark">BE</div>
+          <div>
+            <h1>BrightEdge</h1>
+          <p class="subtle">Crawler run showcase</p>
+          </div>
+        </div>
+
+        <section class="panel control-panel">
+          <h2>Run a Crawl</h2>
+          <div>
+            <label for="singleUrl">Single URL</label>
+            <input id="singleUrl" type="url" placeholder="https://example.com/page">
+          </div>
+          <div>
+            <label for="batchUrls">Batch URLs</label>
+            <textarea id="batchUrls" placeholder="https://example.com/page-one&#10;https://example.com/page-two"></textarea>
+          </div>
+          <div class="row">
+            <label class="check"><input id="forceRefresh" type="checkbox" checked> Force refresh</label>
+            <label class="check"><input id="respectRobots" type="checkbox"> Respect robots.txt</label>
+          </div>
+          <div class="actions">
+            <button class="btn primary" id="crawlOne">Crawl URL</button>
+            <button class="btn secondary" id="crawlBatch">Run Batch</button>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2>Saved Results</h2>
+            <button class="btn secondary" id="refreshResults" type="button">Refresh</button>
+          </div>
+          <div class="results-list" id="resultsList"></div>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="hero">
+          <div>
+            <p class="subtle">API, extraction summary, SEO signals, topics, and raw JSON in one place.</p>
+            <h2 id="pageHeading">Run a crawl to inspect extracted page intelligence.</h2>
+          </div>
+          <div class="status"><span class="dot"></span><span id="statusText">Ready</span></div>
+        </div>
+
+        <div id="output" class="empty">
+          <div>
+            <h2>No result selected</h2>
+            <p class="subtle">Saved results will appear after your first crawl.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const $ = (selector) => document.querySelector(selector);
+      const output = $("#output");
+      const statusText = $("#statusText");
+      const pageHeading = $("#pageHeading");
+      let activeResultId = null;
+
+      function setBusy(message, busy) {
+        statusText.textContent = message;
+        $("#crawlOne").disabled = busy;
+        $("#crawlBatch").disabled = busy;
+      }
+
+      function asText(value, fallback = "No data") {
+        if (value === null || value === undefined || value === "") return fallback;
+        if (Array.isArray(value)) return value.join(", ");
+        if (typeof value === "object") return JSON.stringify(value);
+        return String(value);
+      }
+
+      function escapeHtml(value) {
+        return asText(value, "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function compactTitle(result) {
+        return result?.metadata?.title || result?.extracted_entities?.name || result?.url || "Untitled result";
+      }
+
+      function truncate(text, length = 1800) {
+        const value = asText(text, "");
+        return value.length > length ? `${value.slice(0, length)}...` : value;
+      }
+
+      function formatNumber(value) {
+        if (value === null || value === undefined || value === "") return "No data";
+        return Number(value).toLocaleString();
+      }
+
+      function renderMetric(label, value) {
+        return `<article class="panel metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(asText(value))}</strong></article>`;
+      }
+
+      function renderEntity(label, value) {
+        return `<div class="entity"><span>${escapeHtml(label)}</span><strong>${escapeHtml(asText(value))}</strong></div>`;
+      }
+
+      function renderResult(result) {
+        const metadata = result.metadata || {};
+        const entities = result.extracted_entities || {};
+        const seo = result.seo_signals || {};
+        const title = compactTitle(result);
+        pageHeading.textContent = title;
+
+        const price = entities.price
+          ? `${entities.currency ? `${entities.currency} ` : ""}${entities.price}`
+          : entities.price_unavailable_reason || "No data";
+        const topicHtml = (result.topics || []).map((topic) => `<span class="chip">${escapeHtml(topic)}</span>`).join("");
+        const errorHtml = result.error ? `<p class="error">${escapeHtml(result.error)}</p>` : "";
+
+        output.className = "";
+        output.innerHTML = `
+          <section class="summary-grid">
+            ${renderMetric("Type", result.page_type || "other")}
+            ${renderMetric("Status", result.status_code || 0)}
+            ${renderMetric("Words", formatNumber(seo.word_count))}
+            ${renderMetric("Time", result.processing_time_ms ? `${result.processing_time_ms} ms` : "No data")}
+          </section>
+
+          <section class="content">
+            <article class="panel main-card">
+              <div class="section-head">
+                <div>
+                  <h2 class="title">${escapeHtml(title)}</h2>
+                  <p class="url">${escapeHtml(asText(result.url))}</p>
+                </div>
+                <span class="tag">${result.cache_hit ? "Cache" : "Fresh"}</span>
+              </div>
+              ${errorHtml}
+              <h3>Topics</h3>
+              <div class="chips" style="margin: 10px 0 18px;">${topicHtml || '<span class="chip">No topics</span>'}</div>
+              <h3>Content Preview</h3>
+              <div class="body-preview" style="margin-top: 10px;">${escapeHtml(truncate(result.body_text, 2200) || "No body text extracted.")}</div>
+            </article>
+
+            <aside class="panel side-card">
+              <div class="section-head">
+                <h2>Extracted Details</h2>
+              </div>
+              <div class="entity-grid">
+                ${renderEntity("Title", metadata.title)}
+                ${renderEntity("Brand", entities.brand)}
+                ${renderEntity("Price", price)}
+                ${renderEntity("Rating", entities.average_rating)}
+                ${renderEntity("Reviews", formatNumber(entities.review_count))}
+                ${renderEntity("Author", entities.author)}
+                ${renderEntity("Published", entities.published_date)}
+                ${renderEntity("Schema", seo.has_schema_markup ? "Yes" : "No")}
+                ${renderEntity("H1 Count", seo.h1_count)}
+                ${renderEntity("Redirects", seo.redirect_count)}
+              </div>
+            </aside>
+          </section>
+
+          <section class="panel main-card" style="margin-top: 18px;">
+            <div class="section-head">
+              <h2>Raw JSON</h2>
+              <span class="tag">${escapeHtml(asText(result.saved_file, "In memory"))}</span>
+            </div>
+            <pre class="raw">${escapeHtml(JSON.stringify(result, null, 2))}</pre>
+          </section>
+        `;
+      }
+
+      function renderBatch(batch) {
+        pageHeading.textContent = `Batch crawl: ${batch.success_count} succeeded, ${batch.error_count} failed`;
+        output.className = "";
+        output.innerHTML = `
+          <section class="summary-grid">
+            ${renderMetric("Requested", batch.requested_count)}
+            ${renderMetric("Succeeded", batch.success_count)}
+            ${renderMetric("Failed", batch.error_count)}
+            ${renderMetric("Time", `${batch.processing_time_ms} ms`)}
+          </section>
+          <section class="content" style="grid-template-columns: 1fr;">
+            ${batch.results.map((result) => `
+              <article class="panel main-card">
+                <div class="section-head">
+                  <div>
+                    <h2 class="title">${escapeHtml(compactTitle(result))}</h2>
+                    <p class="url">${escapeHtml(asText(result.url))}</p>
+                  </div>
+                  <span class="tag">${result.page_type || "other"}</span>
+                </div>
+                <div class="entity-grid">
+                  ${renderEntity("Status", result.status_code)}
+                  ${renderEntity("Words", formatNumber(result.seo_signals?.word_count))}
+                  ${renderEntity("Topics", (result.topics || []).slice(0, 5))}
+                  ${renderEntity("Error", result.error || "None")}
+                </div>
+              </article>
+            `).join("")}
+          </section>
+        `;
+      }
+
+      async function loadResults() {
+        const list = $("#resultsList");
+        list.innerHTML = '<p class="subtle">Loading saved results...</p>';
+        const response = await fetch("/api/results");
+        const data = await response.json();
+        if (!data.results.length) {
+          list.innerHTML = '<p class="subtle">No runs yet. Crawl a URL to create the first saved result.</p>';
+          return;
+        }
+        list.innerHTML = data.results.map((item) => `
+          <button class="saved-item ${item.id === activeResultId ? "active" : ""}" data-id="${item.id}">
+            <span class="tag">${item.source}</span>
+            <span class="saved-title" style="margin-top: 8px;">${escapeHtml(item.filename)}</span>
+            <span class="subtle">${new Date(item.updated_at).toLocaleString()} - ${Math.round(item.size_bytes / 1024)} KB</span>
+          </button>
+        `).join("");
+      }
+
+      async function loadResult(id) {
+        activeResultId = id;
+        setBusy("Loading result", true);
+        const response = await fetch(`/api/results/${encodeURIComponent(id)}`);
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Unable to load result");
+        renderResult(result);
+        await loadResults();
+        setBusy("Ready", false);
+      }
+
+      async function crawlOne() {
+        const url = $("#singleUrl").value.trim();
+        if (!url) return;
+        setBusy("Crawling URL", true);
+        const params = new URLSearchParams({
+          url,
+          force_refresh: $("#forceRefresh").checked,
+          respect_robots: $("#respectRobots").checked,
+        });
+        const response = await fetch(`/crawl?${params.toString()}`);
+        const result = await response.json();
+        renderResult(result);
+        await loadResults();
+        setBusy("Ready", false);
+      }
+
+      async function crawlBatch() {
+        const urls = $("#batchUrls").value.split("\n").map((line) => line.trim()).filter(Boolean);
+        if (!urls.length) return;
+        setBusy("Running batch", true);
+        const response = await fetch("/crawl/batch", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            urls,
+            force_refresh: $("#forceRefresh").checked,
+            respect_robots: $("#respectRobots").checked,
+          }),
+        });
+        const result = await response.json();
+        renderBatch(result);
+        await loadResults();
+        setBusy("Ready", false);
+      }
+
+      $("#crawlOne").addEventListener("click", () => crawlOne().catch(showError));
+      $("#crawlBatch").addEventListener("click", () => crawlBatch().catch(showError));
+      $("#refreshResults").addEventListener("click", () => loadResults().catch(showError));
+      $("#resultsList").addEventListener("click", (event) => {
+        const item = event.target.closest("[data-id]");
+        if (item) loadResult(item.dataset.id).catch(showError);
+      });
+
+      function showError(error) {
+        setBusy("Error", false);
+        output.className = "empty";
+        output.innerHTML = `<div><h2 class="error">Something went wrong</h2><p class="subtle">${escapeHtml(error.message)}</p></div>`;
+      }
+
+      loadResults()
+        .then(() => {
+          const first = $("#resultsList [data-id]");
+          if (first) return loadResult(first.dataset.id);
+          return null;
+        })
+        .catch(showError);
+    </script>
+  </body>
+</html>
