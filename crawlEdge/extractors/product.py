@@ -126,6 +126,8 @@ def extract_price_from_primary_dom(soup: BeautifulSoup) -> Dict[str, Any]:
         "#corePriceDisplay_desktop_feature_div",
         "#corePrice_feature_div",
         "#corePrice_desktop",
+        "#apex_desktop",
+        "#desktop_buybox",
         "#priceblock_ourprice",
         "#priceblock_dealprice",
         "#price",
@@ -151,6 +153,58 @@ def extract_price_from_primary_dom(soup: BeautifulSoup) -> Dict[str, Any]:
         if parsed:
             return parsed
     return {}
+
+
+def extract_price_from_product_text(body_text: str) -> Dict[str, Any]:
+    if not body_text:
+        return {}
+
+    fallback_patterns = [
+        r"Without\s+Exchange\s+(?:Rs\.?\s*)?([0-9][0-9,]*(?:\.[0-9]{1,2})?)",
+        r"Deal\s+Price\s+(?:Rs\.?\s*)?([0-9][0-9,]*(?:\.[0-9]{1,2})?)",
+        r"Price\s+(?:Rs\.?\s*)?([0-9][0-9,]*(?:\.[0-9]{1,2})?)",
+    ]
+    for pattern in fallback_patterns:
+        match = re.search(pattern, body_text, re.IGNORECASE)
+        if not match:
+            continue
+        parsed = parse_price_text(f"INR {match.group(1)}")
+        if parsed:
+            parsed["source"] = "product_text_fallback"
+            return parsed
+    return {}
+
+
+def infer_price_unavailable_reason(soup: BeautifulSoup, body_text: str) -> str:
+    page_text = f"{soup.get_text(' ', strip=True)} {body_text}".lower()
+    unavailable_markers = [
+        (
+            "No featured offer is available for this product response",
+            [
+                "no featured offers available",
+                "no featured offer",
+            ],
+        ),
+        (
+            "Amazon returned purchase options without a primary buy-box price",
+            [
+                "purchase options and add-ons",
+                "see all buying options",
+            ],
+        ),
+        (
+            "Product is unavailable or out of stock in the fetched response",
+            [
+                "currently unavailable",
+                "temporarily out of stock",
+                "out of stock",
+            ],
+        ),
+    ]
+    for reason, markers in unavailable_markers:
+        if any(marker in page_text for marker in markers):
+            return reason
+    return ""
 
 
 def extract_schema_product_entities(structured_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -193,7 +247,7 @@ def extract_html_product_entities(
     availability = first_text(soup, ["#availability", "#outOfStock", "#merchant-info"])
     asin_match = re.search(r"/(?:dp|gp/product)/([A-Z0-9]{10})", final_url, re.IGNORECASE)
     specifications = extract_product_specifications(body_text)
-    primary_price = extract_price_from_primary_dom(soup)
+    primary_price = extract_price_from_primary_dom(soup) or extract_price_from_product_text(body_text)
 
     entities = {
         "name": product_name,
@@ -211,10 +265,11 @@ def extract_html_product_entities(
     }
     entities.update(primary_price)
 
-    if "no featured offers available" in body_text.lower():
-        entities["offer_status"] = "no_featured_offer"
-        if "price" not in entities:
-            entities["price_unavailable_reason"] = "No featured offer is available for this product response"
+    if "price" not in entities:
+        unavailable_reason = infer_price_unavailable_reason(soup, body_text)
+        if unavailable_reason:
+            entities["offer_status"] = "no_primary_offer"
+            entities["price_unavailable_reason"] = unavailable_reason
 
     return compact_dict(entities)
 
