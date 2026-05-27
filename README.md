@@ -1,5 +1,35 @@
 # BrightEdge Crawler
 
+## Assignment Notes: AI Usage, Methods, and Evaluation
+
+AI tools used:
+
+- Research: Grok, GPT Research
+- Coding support: Codex, ChatGPT free tier
+- Flowcharts and architecture diagrams: draw.io
+
+Methods, services, and frameworks used:
+
+- Python, FastAPI, Uvicorn, httpx, BeautifulSoup, lxml, trafilatura, price-parser
+- Docker and Docker Compose for local reproducible execution
+- Google Cloud Run for public container-based demo deployment
+- Queue-based production design using Kafka/SQS/Pub/Sub-style systems
+- Redis design for robots.txt caching, rate limiting, and deduplication pre-checks
+- Object storage and metadata warehouse/lakehouse design for production scale
+- Prometheus, Grafana, OpenTelemetry, and cloud logging for monitoring design
+
+Evaluation approach:
+
+- Validate crawler output against product and article URLs
+- Confirm consistent metadata schema for success and failure responses
+- Test invalid URLs, batch crawling, Docker runtime, and public Cloud Run endpoints
+- Review design for reliability, performance, scale, cost, SLOs, SLAs, and operational monitoring
+
+Proof of Concept and estimates are documented in:
+
+- `design/Phase3.md`
+- `design/AI_USAGE_AND_METHODS.txt`
+
 A FastAPI-based URL crawler that fetches HTML pages, follows redirects, classifies page type, extracts metadata/content/entities, and presents the result in a simple local dashboard.
 
 ## What It Does

@@ -1,0 +1,64 @@
+AI Usage and Project Methods
+
+AI tools used:
+
+- Research: Grok, GPT Research
+- Coding support: Codex, ChatGPT free tier
+- Flowcharts and architecture diagrams: draw.io
+
+How AI helped:
+
+- Helped brainstorm architecture tradeoffs for scale, cost, reliability, and performance.
+- Helped draft and refine design documentation.
+- Helped review implementation structure and deployment options.
+- Helped produce flowchart structure that was later represented in draw.io.
+- Helped debug and improve crawler behavior during development.
+
+Methods, services, and frameworks used in the design:
+
+- Python for crawler implementation.
+- FastAPI for the web API and demo dashboard backend.
+- Uvicorn as the ASGI server.
+- httpx for HTTP fetching.
+- BeautifulSoup, lxml, and trafilatura for HTML parsing and content extraction.
+- price-parser for product price parsing.
+- Docker and Docker Compose for local packaging and reproducible execution.
+- Google Cloud Run for public container-based demo deployment.
+ * Phase 2
+- Object storage design for raw content at production scale.
+- Queue-based architecture design using Kafka, SQS, Pub/Sub, or similar systems.
+- Redis-based design for robots.txt caching, rate limiting, and fast deduplication checks.
+- Analytical warehouse/lakehouse design for large-scale metadata querying.
+- Prometheus, Grafana, OpenTelemetry, and cloud logging tools for monitoring design.
+
+Methods for evaluating the design, implementation, and operations:
+
+- Validate crawler output against known product and article URLs.
+- Verify that every response follows a consistent metadata schema.
+- Test invalid URLs and confirm they return structured error output.
+- Test batch crawling with bounded concurrency.
+- Measure crawl success count, error count, latency, and output consistency.
+- Confirm Docker build and Docker runtime behavior.
+- Confirm Cloud Run health endpoint and public API behavior.
+- Review design against reliability, performance, scale, and cost requirements.
+- Use logs and metrics to evaluate crawl progress, failures, and operational health.
+
+Proof of Concept breakdown:
+
+1. Build and run the crawler locally.
+2. Package the crawler with Docker.
+3. Add a public API and simple dashboard.
+4. Validate URL crawling, metadata extraction, topic extraction, and product/article classification.
+5. Add batch crawl support for small bounded tests.
+6. Deploy the Dockerized service to Cloud Run.
+7. Test the public URL, health endpoint, API docs, and sample crawl endpoints.
+8. Document production-scale next steps in Phase 2 and Phase 3 design documents.
+
+
+Documentation included:
+
+- README.md: project overview, setup, API usage, Docker usage, tests, and deployment notes.
+- design/PHASE_1_DOCUMENT.md: crawler implementation documentation.
+- design/Phase2.md: billion-scale operational design documentation.
+- design/Phase3.md: engineering PoC, blocker, estimate, and release plan.
+- design/AI_USAGE_AND_METHODS.txt: AI usage, methods, frameworks, evaluation approach and PoC breakdown.
